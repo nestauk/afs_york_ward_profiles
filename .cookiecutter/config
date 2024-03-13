@@ -1,0 +1,5 @@
+# Change these at your peril:
+export PROJECT_NAME=AFS York Ward Profiles
+export REPO_NAME=afs_york_ward_profiles
+export DESCRIPTION=A short description of the project.
+export PROJECT_OPENNESS=public
