@@ -1,0 +1,23 @@
+﻿Number,Statistic,Explanation
+1,Number of children,"The number of children aged 0-3 recorded as living in the ward. These children could be in any/all of the datasets received about health, ASQ, WellComm, EY funding or CIN/CPP. They were born between 2020 and 2022. The smaller number is the average for all of York, i.e. the total number of children in the data/ 21 (number of wards in York). "
+2,Number of children with a healthy start voucher,"The number of children aged 0-3 in the health dataset who took up the Healthy Start Voucher in that ward versus the average for York. Children taking up health start vouchers are only those who applied, not all those who are eligible.  "
+3,Number of children with 2 year old funding,The number of children aged 0-3 who have 2 year old funding between April 2022 - April 2023 in the dataset for that ward. 
+4,Number of children in Social Care data,The number of children aged 0-3 who have Children in Need (CIN)/ Child Protection Plans (CPPs) in the data for that ward.
+5,IMD for ward,"The index of multiple deprivation (IMD) decile averaged across all LSOAs which make up each ward. The lower the decile, the more deprived the area is."
+6,Children (aged 0-15) living in low income families,"Taken from the Ward profiles, the percentage of children (aged 0-15) living in low income families for that Ward. This is compared to the average across York of 9.6%. "
+7,Number of children referred to GP,Number of children referred to a GP by a member of the HCS in the health dataset for that ward.
+8,Gender gap Red/Amber or ASQ emerging,Number of male children minus the number of female children with a Red/Amber score in WellComm or ASQ-3 emerging results.
+9,Low birth weight,"Taken from the ward profiles, the percentage of children with low birth weight for that ward. On average 8.1% of children in York have a low birth weight."
+10,Percentage of children breasfeeding at 6-8 weeks: Totally,"Taken from the ward profiles, for 2022/2023 the percentage of children breastfeeding at 6-8 weeks: Totally for that ward versus the York average. Note: the York average was estimated from the images in the ward profiles. "
+11,Percentage of children breasfeeding at 6-8 weeks: Totally or Partially,"Taken from the ward profiles, for 2022/2023 the percentage of children breastfeeding at 6-8 weeks: Totally or Partially for that ward versus the York average. Note: the York average was estimated from the images in the ward profiles. "
+12,Community needs index score,"A higher score indicates an area has higher levels of community need. Community Needs Index Score, taken from 2019 currently. Looking to update this to 2023, in the next couple of weeks. The Community Needs Score comprises of:
+1) Civic Assets: measures the presence of key community, civic, educational and cultural assets in close proximity of the area.
+2) Connectedness: Measures the connectivity to key services, digital infrastructure, isolation and strength of the local jobs market.
+3) Active and Engaged Community: Measures the levels of third sector civic and community activity and barriers to participation and engagement."
+13,Reception year overweight,"Taken from the ward profiles, the percentage of children overweight in Reception year for that ward. On average for York 22.5% of children are overweight in reception year. "
+14,Residents agree their local area is a good place for children and young people to grow up,"Taken from the ward profiles, the percentage of residents who agree their local area is a good place for children and
+young people to grow up, for that ward. Across York, 71.5% of residents agree."
+15,Number of children with ASQ 9 -12 C&L domain emerging,The number of children with ASQ aged 9 -12 months results vs the average number in York.
+16,Number of children with ASQ 24-30 C&L domain emerging,The number of children with ASQ aged 24 -30 months results vs the average number in York.
+17,Number of children with WellComm Red/Amber ,The number of children with WellComm Red/Amber results vs the average number in York.
+18,Number of children with WellComm: Red/Amber or ASQ emerging (disadvantaged),"The number of not meeting expectations (disadvantaged) is the number of children with a Red/Amber score in WellComm or ASQ-3 emerging results who took up a health start voucher or are in the 2 year old funding dataset. This is a proxy for disadvantage and is not meant to be taken as an indication for all children who are disadvantaged, just those we could identify from the datasets. "
