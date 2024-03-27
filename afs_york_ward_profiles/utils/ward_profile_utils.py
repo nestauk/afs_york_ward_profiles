@@ -4,6 +4,7 @@
 import math
 import numpy as np
 from PIL import Image, ImageFont, ImageDraw
+import pandas as pd
 
 
 def generate_colour_image(hex_code, size) -> Image:
@@ -166,7 +167,9 @@ def percentage_0(number: float, decimal: int = 1) -> str:
     return int_or_float(round_number) + "%"
 
 
-def text_york(number: float, percentage: bool = False, decimal: int = 1) -> str:
+def text_york(
+    number: float, percentage: bool = False, decimal: int = 1, split: bool = False
+) -> str:
     """Function to return the text for the York average.
 
     Args:
@@ -176,6 +179,73 @@ def text_york(number: float, percentage: bool = False, decimal: int = 1) -> str:
         str: The text for the York average.
     """
     if percentage:
-        return f"vs {percentage_0(number)} on average for York wards"
+        text_york = f"vs {percentage_0(number)} on average for York wards"
     else:
-        return f"vs {int_or_float(round(number,decimal))} on average for York wards"
+        text_york = (
+            f"vs {int_or_float(round(number,decimal))} on average for York wards"
+        )
+
+    # Split into two lines separated by a space between York and wards
+    if split:
+        text_york = text_york.replace("York wards", "York\nwards")
+
+    return text_york
+
+
+def data_unavailable(
+    draw: ImageDraw,
+    data_series: pd.Series,
+    comparator_series: pd.Series,
+    font_path: str,
+    index: tuple,
+    coordinates: tuple,
+):
+    """Function to add text to the image if data is unavailable.
+
+    Args:
+        draw (ImageDraw): The ImageDraw object.
+        data_series (pd.Series): The data series.
+        comparator_series (pd.Series): The comparator series.
+        font_path (str): The path to the font file.
+        index (tuple): The index of the data.
+        coordinates (tuple): The coordinates for the text.
+
+    Returns:
+
+    """
+    if any(np.isnan(x) for x in data_series[index[0] : index[1]]) and any(
+        np.isnan(x) for x in comparator_series[index[0] : index[1]]
+    ):
+        draw.text(
+            coordinates,
+            "Ward and York\ndata unavailable",
+            font=get_font("Bold", 18, font_path),
+            fill="#0F294A",
+            anchor="mm",
+            align="center",
+        )
+        data_available = False
+    elif any(np.isnan(x) for x in data_series[index[0] : index[1]]):
+        draw.text(
+            coordinates,
+            "Ward data\nunavailable",
+            font=get_font("Bold", 18, font_path),
+            fill="#0F294A",
+            anchor="mm",
+            align="center",
+        )
+        data_available = False
+    elif any(np.isnan(x) for x in comparator_series[index[0] : index[1]]):
+        draw.text(
+            coordinates,
+            "York data\nunavailable",
+            font=get_font("Bold", 18, font_path),
+            fill="#0F294A",
+            anchor="mm",
+            align="center",
+        )
+        data_available = False
+    else:
+        data_available = True
+
+    return data_available

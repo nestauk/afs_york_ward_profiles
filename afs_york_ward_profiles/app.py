@@ -52,7 +52,9 @@ with tab1:
         st.write("No csv uploaded! Please upload a csv file.")
 
     # Load the template image
-    template_image = Image.open("afs_york_ward_profiles/app_utils/images/template.png")
+    template_image = Image.open(
+        "afs_york_ward_profiles/app_utils/images/template_2018_2022.png"
+    )
 
     if ward_data is not None:
         # Create a select box with the York wards
@@ -102,7 +104,7 @@ with tab2:
     )
     # Create a select box with the numbers
     selected_number = st.selectbox(
-        "Select or type a number:", [f"{i+1}" for i in range(18)]
+        "Select or type a number:", [f"{i+1}" for i in range(23)]
     )
 
     # Load the csv file with the information

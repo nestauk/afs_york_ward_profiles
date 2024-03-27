@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 from afs_york_ward_profiles.utils.ward_profile_utils import int_or_float
+import streamlit as st
 
 
 def create_gender_gap_plot(
@@ -96,6 +97,104 @@ def create_gender_gap_plot(
         return fig
 
 
+def create_hospital_maternity_plot(
+    data_series: pd.Series,
+    comparator_series: pd.Series,
+    name: str,
+    index_list: list,
+    font_path: str,
+    font_size: int,
+    fig_size: tuple = (5, 2.5),
+    save_path: str = None,
+) -> plt.Figure:
+    """Create a bar chart for the hospital maternity data from the York District Hospital
+    maternity system, taken from the York Ward Profiles.
+
+    Args:
+        data_series (pd.Series): The series with the data for the ward
+        comparator_series (pd.Series): The series with the data for the comparator
+        name (str): The name of the ward
+        index_list (list): The list with the indexes of the data in the series
+        font_path (str): The path to the font file
+        font_size (int): The size of the font
+        save_path (str, optional): The path to save the figure. Defaults to None.
+
+    Returns:
+        fig (matplotlib.figure.Figure): The figure with the plot
+    """
+    # Creating the dataframe
+    type_list = ["Teen pregnancies", "Low birth weight", "Mother smoking"]
+    dfs = []
+    for index, type_ in zip(index_list, type_list):
+        df = pd.DataFrame(
+            {
+                "Ward": ["York", name],
+                "Maternity": [comparator_series[index], data_series[index]],
+                "Type": [type_] * 2,
+            }
+        )
+        dfs.append(df)
+
+    maternity_df = pd.concat(dfs, axis=0, ignore_index=True)
+
+    # Load the font
+    choice_font = fm.FontProperties(fname=font_path)
+
+    # Group the data by 'Ward'
+    grouped_df = maternity_df.groupby("Ward")
+
+    # Create subplots for each group
+    fig, axs = plt.subplots(1, len(grouped_df), figsize=fig_size, sharey=True)
+
+    # Define the color map based on the 'Maternity' column
+    color_map = {
+        "Teen pregnancies": "#0F294A",
+        "Low birth weight": "#00A8C1",
+        "Mother smoking": "#6EC8D6",
+    }
+
+    # Iterate over each group and plot the bar chart
+    for i, (group, data) in enumerate(grouped_df):
+        ax = axs[i]
+        ax.bar(data["Type"], data["Maternity"], color=data["Type"].map(color_map))
+
+        # Add percentage text to bars
+        for j, value in enumerate(data["Maternity"]):
+            if value >= 2.5:
+                color = "white"
+                y_pos = 2.5
+            elif 0 < value < 2.5:
+                color = "#0F294A"
+                y_pos = 0
+            else:
+                color = "#0F294A"
+                y_pos = 0
+
+            ax.text(
+                j,
+                value - y_pos,
+                f"{value:.0f}%",
+                ha="center",
+                va="bottom",
+                color=color,
+                fontsize=font_size,
+                fontproperties=choice_font,
+            )
+
+        # Remove the axis and titles
+        ax.axis("off")
+
+    # Adjust spacing between subplots
+    plt.tight_layout()
+
+    if save_path:
+        # Save the figure
+        fig.savefig(save_path, bbox_inches="tight", pad_inches=0, transparent=True)
+    else:
+        # Return the figure
+        return fig
+
+
 def create_breastfeeding_plot(
     data_series: pd.Series,
     comparator_series: pd.Series,
@@ -156,7 +255,7 @@ def create_breastfeeding_plot(
         for j, value in enumerate(data["Breastfeeding"]):
             ax.text(
                 j,
-                value - 13,
+                value - 14,
                 f"{value:.0f}%",
                 ha="center",
                 va="bottom",
@@ -205,9 +304,9 @@ def create_outcomes_plot(
     # Creating the dataframe
     outcomes_df = pd.DataFrame(
         {
-            "York": comparator_series.loc[14:17],
-            name: data_series.loc[14:17],
-            "measure": ["ASQ 9-12", "ASQ 24-30", "Wellcomm", "Disadvantaged"],
+            "York": comparator_series.loc[18:22],
+            name: data_series.loc[18:22],
+            "measure": ["ASQ 9-12", "ASQ 24-30", "Wellcomm", "EYFSP", "Disadvantaged"],
         }
     )
     outcomes_df = outcomes_df.melt(
@@ -217,9 +316,16 @@ def create_outcomes_plot(
     # Load the font
     choice_font = fm.FontProperties(fname=font_path)
 
-    fig, axes = plt.subplots(nrows=4, ncols=1, figsize=fig_size, sharex=True)
+    fig, axes = plt.subplots(nrows=5, ncols=1, figsize=fig_size, sharex=True)
 
     color_map = {name: "#0F294A", "York": "#00A8C1"}
+
+    if outcomes_df["Value"].max() > 70:
+        tick_val = 10
+    elif outcomes_df["Value"].max() > 15:
+        tick_val = 5
+    else:
+        tick_val = 2
 
     # Iterate over each measure and plot the bar chart
     for i, (measure, ax) in enumerate(
@@ -234,7 +340,7 @@ def create_outcomes_plot(
 
         # Add text to the bars
         for ward, value in zip(data["Ward"], data["Value"]):
-            if value < 6:
+            if value < 20:
                 ax.text(
                     value + 0.2,
                     ward,
@@ -258,22 +364,14 @@ def create_outcomes_plot(
                 )
 
         # Set x-axis ticks to the nearest 2 or 5, set axis to the nearest 2 or 5 higher than the max value
-        if outcomes_df["Value"].max() > 15:
-            xlim = round(outcomes_df["Value"].max(), 0)
-            if xlim % 5 == 0:
-                xlim += 1
-            else:
-                xlim += 5
-            ax.set_xlim(0, xlim)
-            ax.xaxis.set_major_locator(plt.MultipleLocator(5))
+
+        xlim = round(outcomes_df["Value"].max(), 0)
+        if xlim % tick_val == 0:
+            xlim += 1
         else:
-            xlim = round(outcomes_df["Value"].max(), 0)
-            if xlim % 2 == 0:
-                xlim += 1
-            else:
-                xlim += 2
-            ax.set_xlim(0, xlim)
-            ax.xaxis.set_major_locator(plt.MultipleLocator(2))
+            xlim += tick_val
+        ax.set_xlim(0, xlim)
+        ax.xaxis.set_major_locator(plt.MultipleLocator(tick_val))
 
         ax.set_axisbelow(True)
 
